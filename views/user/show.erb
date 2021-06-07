@@ -1,0 +1,13 @@
+<h2>User page / Content</h2>
+
+<a href="/content/new">New content</a>
+<br>
+<br>
+
+<% @user.contents.each do |content| %>
+  <%= content.title %>
+    <a href="/content/<%= content.id %>">show</a>
+  | <a href="/content/<%= content.id %>/edit">edit</a>
+  | <a href="/content/<%= content.id %>/delete">x</a>
+  <br>
+<% end %>

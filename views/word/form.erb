@@ -1,0 +1,10 @@
+<h2>Word form</h2>
+
+<form action="/word/save" method="post">
+  <input type="hidden" name="content_id" value="<%= @content.id %>">
+  Word:        <input type="text" name="word"><br>
+  Translation: <input type="text" name="translation"><br>
+  <br>
+
+  <input type="submit" value="Save">
+</form>

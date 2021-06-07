@@ -1,0 +1,24 @@
+<html>
+<head>
+  <title>Learn with talk</title>
+  <style>
+    body{ background-color: #e0e0e0 }
+  </style>
+</head>
+<body>
+  <small>
+    <a href="/">main</a>
+    |
+    <a href="/users">users</a>
+  </small>
+  <% if @current_user %>
+    <div>
+      User: <%= @current_user.name %> [<a href="/logout">logout</a>]
+    </div>
+  <% end %>
+  <h1>Learn with talk</h1>
+
+  <%= yield %>
+
+</body>
+</html>

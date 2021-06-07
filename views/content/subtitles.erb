@@ -1,0 +1,42 @@
+<a href="/content/<%= @content.id %>">back</a><br>
+<h2><%= @content.title %></h2>
+<i><%= @content.url %></i>
+<br>
+<br>
+<br>
+
+<table>
+  <tr>
+    <td>
+      <% @subtitles.each_with_index do |line, index| %>
+        <a name="line_index_<%= index %>"></a>
+        <div style="padding-bottom: 10px; <%= 'background-color: #f7f7ad;' if params[:line] == index.to_s %>">
+          <%= line %>
+          <a style="text-decoration: none; font-size: 10pt; color: #c0c0c0;" href="?line=<%= index %>#line_index_<%= index %>">+</a>
+        </div>
+      <% end %>
+    </td>
+    <td>
+      <% @subtitles.each_with_index do |line, index| %>
+        <div style="padding-bottom: 10px;">
+          &nbsp;
+          <% if @words_in_pos[index] %>
+            <span style="color: gray; font-size: 9pt">
+              <%= @words_in_pos[index].map{|w| "#{w.word} / #{w.translation}"}.join(', ') %>
+            </span>
+          <% end %>
+          <% if params[:line] == index.to_s %>
+            <form action="/word/save" method="post">
+              <input type="hidden" name="content_id" value="<%= @content.id %>">
+              <input type="hidden" name="subtitle_line_pos" value="<%= index %>">
+              <input type="text" name="word" placeholder="word" size="10"> / 
+              <input type="text" name="translation" placeholder="translation" size="10">
+              <input type="submit" value="Add">
+            </form>
+          <% end %>
+        </div>
+      <% end %>
+    </td>
+  </tr>
+</table>
+

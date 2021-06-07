@@ -1,0 +1,11 @@
+<h2>User form</h2>
+
+<form action="/user/save" method="post">
+  <% if @user %>
+    <input type="hidden" name="user_id" value="<%= @user.id %>">
+  <% end %>
+  Name: <input type="text" name="name" value="<%= @user && @user.name %>">
+  <br>
+
+  <input type="submit" value="Save">
+</form>

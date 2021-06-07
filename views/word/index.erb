@@ -1,0 +1,10 @@
+<a href="/content/<%= @content.id %>">back to content</a><br>
+<h2><%= @content.title %> / words</h2>
+<a href="/word/new?content_id=<%= @content.id %>">new word</a>
+<br>
+<br>
+<% @words.each do |word| %>
+  <%= word.word %> / <%= word.translation %> 
+  <a href="/word/<%= word.id %>/delete">x</a>
+  <br>
+<% end %>

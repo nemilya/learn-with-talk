@@ -1,0 +1,19 @@
+<a href="/user/<%= @content.user_id %>">back to user</a><br>
+<h2><%= @content.title %></h2>
+<i><%= @content.url %></i>
+<br>
+<% if @content.is_youtube? %>
+  <% if @content.is_subtitles_exists? %>
+    <a href="/content/<%= @content.id %>/subtitles">show subtitles</a>
+    |
+    <a href="/content/<%= @content.id %>/player">show player</a>
+  <% else %>
+    <a href="/content/<%= @content.id %>/download_subtitles">download subtitles</a>
+  <% end %>
+  |
+<% end %>
+<a href="/words/<%= @content.id %>">words</a>
+<br>
+<br>
+
+<%= @content.transcript.gsub("\n", "<br>")%>
