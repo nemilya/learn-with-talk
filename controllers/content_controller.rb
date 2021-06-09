@@ -1,3 +1,9 @@
+get '/content/:content_id/vuejs' do
+  @content = Content.find(id: params[:content_id])
+  @subtitles = @content.subtitles
+  erb :'content/vuejs'
+end
+
 get '/content/:content_id/player' do
   @content = Content.find(id: params[:content_id])
   @subtitles = @content.subtitles

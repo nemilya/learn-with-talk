@@ -1,0 +1,39 @@
+<a href="/content/<%= @content.id %>">back</a><br>
+<h2><%= @content.title %></h2>
+<i><%= @content.url %></i>
+<br>
+<br>
+<%= erb :'content/_player' %>
+<br>
+
+<script>
+function seek(sec){
+  player.pauseVideo();
+  player.seekTo(sec);
+  player.playVideo();
+}
+</script>
+
+<div id="subtitles">
+  <div v-for="subtitle in subtitles" style="padding-bottom: 10px">
+    <a style="text-decoration: none; font-size: 10pt; color: #c0c0c0;" href="#" v-on:click.prevent="seekTo(subtitle.begin)">&gt;</a>
+    {{subtitle.text}}
+  </div>
+</div>
+
+<script>
+const Subtitles = {
+  data() {
+    return {
+      subtitles: <%= @subtitles.to_json %>
+    }
+  },
+  methods: {
+    seekTo(sec){
+      seek(sec);
+    }
+  }
+}
+Vue.createApp(Subtitles).mount('#subtitles')
+</script>
+
