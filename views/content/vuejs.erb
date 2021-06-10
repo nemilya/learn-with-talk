@@ -7,33 +7,91 @@
 <br>
 
 <script>
-function seek(sec){
+function playerSeekTo(sec){
   player.pauseVideo();
   player.seekTo(sec);
   player.playVideo();
 }
+function playerGetCurrentTime(){
+  let player_state = player.getPlayerState();
+  if (player_state == -1 || player_state == 1 || player_state == 2){
+    return player.getCurrentTime();
+  };
+  return 0.0;
+}
 </script>
 
 <div id="subtitles">
-  <div v-for="subtitle in subtitles" style="padding-bottom: 10px">
-    <a style="text-decoration: none; font-size: 10pt; color: #c0c0c0;" href="#" v-on:click.prevent="seekTo(subtitle.begin)">&gt;</a>
-    {{subtitle.text}}
+<br>
+  <button @click="setModeShowAll()">show all subtitles</button>
+  &nbsp;
+  <button @click="setModeShowPartial()">show partial</button>
+
+  <v-templale v-for="(subtitle, index) in subtitles">
+  <div v-if="showPos(index)" style="padding-bottom: 10px">
+    <a style="text-decoration: none; font-size: 10pt; color: #c0c0c0;" href="#" v-on:click.prevent="seekTo(subtitle.begin); current_pos = index;">&gt;</a>
+    <span v-bind:style="index == current_pos ? 'background-color: #fdfda5' : ''">{{subtitle.text}}</span>
   </div>
+  </v-template>
 </div>
 
 <script>
 const Subtitles = {
   data() {
     return {
-      subtitles: <%= @subtitles.to_json %>
+      mode: 'show_all',
+      subtitles: <%= @subtitles.to_json %>,
+      offset_sec: '',
+      current_pos: -1,
     }
   },
   methods: {
+    showPos(pos){
+      if (this.mode == 'show_all'){
+        return true;
+      } 
+      else if (this.mode == 'show_partial'){
+        let lines_around = 2;
+        if (pos >= (this.current_pos-lines_around) && pos <= (this.current_pos+lines_around)){
+          return true;
+        }
+      }
+      return false;
+    },
     seekTo(sec){
-      seek(sec);
+      playerSeekTo(sec);
+    },
+    setOffsetSec(){
+      this.offset_sec = playerGetCurrentTime();
+    },
+    setModeShowAll(){
+      this.mode = 'show_all';
+    },
+    setModeShowPartial(){
+      this.setOffsetSec();
+      this.setSubtitlePosition();
+      this.mode = 'show_partial';
+    }, 
+    setSubtitlePosition(){
+      let seek_sec = parseFloat(this.offset_sec);
+      if (Number.isNaN(seek_sec)){
+        this.current_pos = -1;
+      }
+      else {
+        this.current_pos = this.searchSubtitlePos(seek_sec);
+      };
+    },
+    searchSubtitlePos(sec){
+      for (let pos = 0; pos < this.subtitles.length; pos++){
+        if (this.subtitles[pos].begin < sec && this.subtitles[pos].end > sec){
+          return pos;
+        }
+      }
+      return -1;
     }
   }
 }
+
 Vue.createApp(Subtitles).mount('#subtitles')
 </script>
 
