@@ -27,12 +27,43 @@ function playerGetCurrentTime(){
   &nbsp;
   <button @click="setModeShowPartial()">show partial</button>
 
-  <v-templale v-for="(subtitle, index) in subtitles">
-  <div v-if="showPos(index)" style="padding-bottom: 10px">
-    <a style="text-decoration: none; font-size: 10pt; color: #c0c0c0;" href="#" v-on:click.prevent="seekTo(subtitle.begin); current_pos = index;">&gt;</a>
-    <span v-bind:style="index == current_pos ? 'background-color: #fdfda5' : ''">{{subtitle.text}}</span>
-  </div>
+  <table>
+  <tr>
+    <td>
+  <v-template v-for="(subtitle, pos) in subtitles">
+    <div v-if="showPos(pos)" @mouseover="hover_pos = pos" @mouseleave="hover_pos = -1" style="padding: 5px;">
+      <a style="text-decoration: none; font-size: 10pt; color: #c0c0c0;" href="#" v-on:click.prevent="seekTo(subtitle.begin); current_pos = pos;">&gt;</a>
+      <span style="padding-left: 5px" v-bind:style="pos == current_pos ? 'background-color: #fdfda5' : ''">{{subtitle.text}}</span>
+      &nbsp;
+      <div style="display: inline"><a href="#" style="font-size: 10pt" v-show="pos == hover_pos" @click.prevent="showFormAdd(pos)">add</a></div>
+    </div>
   </v-template>
+    </td>
+    <td>
+  <v-template v-for="(subtitle, pos) in subtitles">
+    <div v-show="showPos(pos)" style="padding: 5px;">
+      &nbsp;
+      <span v-show="pos == add_word_at_pos">
+        <input size="10" type="text" v-model="word" :id="'input_word_'+pos" />
+        /
+        <input size="10" type="text" v-model="translation" />
+        &nbsp;
+        <a style="font-size: 10pt" href="#" @click.prevent="addWord()">add</a>
+        &nbsp;
+        <a style="font-size: 10pt" href="#" @click.prevent="add_word_at_pos = -1">cancel</a>
+      </span>
+      <v-template v-for="word in words">
+        <span v-if="word.pos == pos && word.archived == ''" style="color: gray">
+          {{word.word}}
+          <span style="font-size: 9pt; padding-right: 5px">/ {{word.translation}}</span>
+          <a style="font-size: 8pt; color: gray" href="#" @click.prevent="word.archived = 'true'">x</a>
+        </span>
+      </v-template>
+    </div>
+  </v-template>
+    </td>
+  </tr>
+  </table>
 </div>
 
 <script>
@@ -43,9 +74,35 @@ const Subtitles = {
       subtitles: <%= @subtitles.to_json %>,
       offset_sec: '',
       current_pos: -1,
+      hover_pos: -1,
+      add_word_at_pos: -1,
+      word: "",
+      translation: "",
+      words: [] // { word: "...", translation: "...", pos: "...", archived: "" }
     }
   },
   methods: {
+    showFormAdd(pos){
+      this.add_word_at_pos = pos;
+      this.$nextTick(() =>
+        this.focusInputWord(pos)
+      );
+    },
+    focusInputWord(pos){
+      document.getElementById("input_word_"+pos).focus();
+    },
+    addWord(){
+      let word = {
+        word:        this.word,
+        translation: this.translation,
+        pos:         this.add_word_at_pos,
+        archived:    ""
+      };
+      this.words.push(word);
+      this.word = "";
+      this.translation = "";
+      this.add_word_at_pos = -1;
+    },
     showPos(pos){
       if (this.mode == 'show_all'){
         return true;
