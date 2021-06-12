@@ -31,11 +31,10 @@ function playerGetCurrentTime(){
   <tr>
     <td>
   <v-template v-for="(subtitle, pos) in subtitles">
-    <div v-if="showPos(pos)" @mouseover="hover_pos = pos" @mouseleave="hover_pos = -1" style="padding: 5px;">
+    <div v-if="showPos(pos)" style="padding: 5px;">
       <a style="text-decoration: none; font-size: 10pt; color: #c0c0c0;" href="#" v-on:click.prevent="seekTo(subtitle.begin); current_pos = pos;">&gt;</a>
       <span style="padding-left: 5px" v-bind:style="pos == current_pos ? 'background-color: #fdfda5' : ''">{{subtitle.text}}</span>
-      &nbsp;
-      <div style="display: inline"><a href="#" style="font-size: 10pt" v-show="pos == hover_pos" @click.prevent="showFormAdd(pos)">add</a></div>
+      <a href="#" style="font-size: 10pt; color: #ccc; text-decoration: none; padding-left: 3px" @click.prevent="showFormAdd(pos)">+</a></div>
     </div>
   </v-template>
     </td>
@@ -53,7 +52,7 @@ function playerGetCurrentTime(){
         <a style="font-size: 10pt" href="#" @click.prevent="add_word_at_pos = -1">cancel</a>
       </span>
       <v-template v-for="word in words">
-        <span v-if="word.pos == pos && word.archived == ''" style="color: gray">
+        <span v-if="word.content_id == <%= @content.id %> && word.pos == pos && word.archived == ''" style="color: gray">
           {{word.word}}
           <span style="font-size: 9pt; padding-right: 5px">/ {{word.translation}}</span>
           <a style="font-size: 8pt; color: gray" href="#" @click.prevent="word.archived = 'true'">x</a>
@@ -74,11 +73,10 @@ const Subtitles = {
       subtitles: <%= @subtitles.to_json %>,
       offset_sec: '',
       current_pos: -1,
-      hover_pos: -1,
       add_word_at_pos: -1,
       word: "",
       translation: "",
-      words: [] // { word: "...", translation: "...", pos: "...", archived: "" }
+      words: [] // { word: "...", translation: "...", content_id: 123, pos: "...", archived: "" }
     }
   },
   methods: {
@@ -95,6 +93,7 @@ const Subtitles = {
       let word = {
         word:        this.word,
         translation: this.translation,
+        content_id:  <%= @content.id %>,
         pos:         this.add_word_at_pos,
         archived:    ""
       };
@@ -145,6 +144,21 @@ const Subtitles = {
         }
       }
       return -1;
+    }
+  },
+  watch: {
+    words: {
+      handler() {
+        console.log('Words Items array changed!');
+          localStorage.setItem('words', JSON.stringify(this.words));
+      },
+      deep: true,
+    },
+  },
+  mounted(){
+    console.log('App Mounted');
+    if (localStorage.getItem('words')){
+      this.words = JSON.parse(localStorage.getItem('words'));
     }
   }
 }
