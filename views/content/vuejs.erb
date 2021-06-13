@@ -146,17 +146,16 @@ const Subtitles = {
       return -1;
     }
   },
+  // localStorage
   watch: {
     words: {
       handler() {
-        console.log('Words Items array changed!');
-          localStorage.setItem('words', JSON.stringify(this.words));
+        localStorage.setItem('words', JSON.stringify(this.words));
       },
       deep: true,
     },
   },
   mounted(){
-    console.log('App Mounted');
     if (localStorage.getItem('words')){
       this.words = JSON.parse(localStorage.getItem('words'));
     }
