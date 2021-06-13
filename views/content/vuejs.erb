@@ -34,7 +34,7 @@ function playerGetCurrentTime(){
     <div v-if="showPos(pos)" style="padding: 5px;">
       <a style="text-decoration: none; font-size: 10pt; color: #c0c0c0;" href="#" v-on:click.prevent="seekTo(subtitle.begin); current_pos = pos;">&gt;</a>
       <span style="padding-left: 5px" v-bind:style="pos == current_pos ? 'background-color: #fdfda5' : ''">{{subtitle.text}}</span>
-      <a href="#" style="font-size: 10pt; color: #ccc; text-decoration: none; padding-left: 3px" @click.prevent="showFormAdd(pos)">+</a></div>
+      <a href="#" style="font-size: 10pt; color: #ccc; text-decoration: none; padding-left: 3px" @click.prevent="showFormAdd(pos)">+</a>
     </div>
   </v-template>
     </td>
@@ -42,14 +42,14 @@ function playerGetCurrentTime(){
   <v-template v-for="(subtitle, pos) in subtitles">
     <div v-show="showPos(pos)" style="padding: 5px;">
       &nbsp;
-      <span v-show="pos == add_word_at_pos">
+      <span v-if="pos == add_word_at_pos">
         <input size="10" type="text" v-model="word" :id="'input_word_'+pos" />
         /
-        <input size="10" type="text" v-model="translation" />
+        <input size="10" type="text" v-model="translation" @keyup.enter="addWord()" />
         &nbsp;
         <a style="font-size: 10pt" href="#" @click.prevent="addWord()">add</a>
         &nbsp;
-        <a style="font-size: 10pt" href="#" @click.prevent="add_word_at_pos = -1">cancel</a>
+        <a style="font-size: 10pt" href="#" @click.prevent="cancelFormAdd()">cancel</a>
       </span>
       <v-template v-for="word in words">
         <span v-if="word.content_id == <%= @content.id %> && word.pos == pos && word.archived == ''" style="color: gray">
@@ -80,11 +80,24 @@ const Subtitles = {
     }
   },
   methods: {
+    getSelectedText(){
+      var sel_obj = window.getSelection();
+      var sel_text = sel_obj.toString();
+      return sel_text;
+    },
     showFormAdd(pos){
+      let selected_text = this.getSelectedText();
+      if (selected_text != ''){
+        this.word = selected_text;
+      };      
       this.add_word_at_pos = pos;
       this.$nextTick(() =>
         this.focusInputWord(pos)
       );
+    },
+    cancelFormAdd(){
+      this.add_word_at_pos = -1;
+      this.word = "";
     },
     focusInputWord(pos){
       document.getElementById("input_word_"+pos).focus();
