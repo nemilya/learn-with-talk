@@ -6,7 +6,7 @@
   <% if @content.is_subtitles_exists? %>
     <a href="/content/<%= @content.id %>/subtitles">show subtitles</a>
     |
-    <a href="/content/<%= @content.id %>/player">show player</a>
+    <a href="/content/<%= @content.id %>/vuejs">player</a>
   <% else %>
     <a href="/content/<%= @content.id %>/download_subtitles">download subtitles</a>
   <% end %>
