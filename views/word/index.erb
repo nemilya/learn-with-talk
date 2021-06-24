@@ -4,7 +4,12 @@
 <br>
 <br>
 <% @words.each do |word| %>
-  <%= word.word %> / <%= word.translation %> 
-  <a href="/word/<%= word.id %>/delete">x</a>
-  <br>
+  <div style="margin-top: 3pt">
+  <span style="font-size: 15pt"><%= word.word %></span> <span style="color: gray">/ <%= word.translation %> </span>
+  <small>
+    <a href="/word/<%= word.id %>/edit">e</a>
+    |
+    <a href="/word/<%= word.id %>/delete">x</a>
+  </small>
+  </div>
 <% end %>

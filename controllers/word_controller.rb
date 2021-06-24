@@ -9,6 +9,12 @@ get '/word/new' do
   erb :'word/form'
 end
 
+get '/word/:word_id/edit' do
+  @word = Word.find(id: params[:word_id])
+  @content = @word.content
+  erb :'word/form'
+end
+
 get '/word/:word_id/delete' do
   # todo check permission
   word = Word.find(id: params[:word_id])
@@ -17,8 +23,12 @@ get '/word/:word_id/delete' do
 end
 
 post '/word/save' do
-  word = Word.new
-  word.content_id = params[:content_id]
+  if params[:word_id]
+    word = Word.find(id: params[:word_id])
+  else
+    word = Word.new
+    word.content_id = params[:content_id]
+  end
   ['word', 'translation'].each do |f_name|
     word[f_name] = params[f_name]
   end

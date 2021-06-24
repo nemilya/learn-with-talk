@@ -2,8 +2,11 @@
 
 <form action="/word/save" method="post">
   <input type="hidden" name="content_id" value="<%= @content.id %>">
-  Word:        <input type="text" name="word"><br>
-  Translation: <input type="text" name="translation"><br>
+  <% if @word %>
+    <input type="hidden" name="word_id" value="<%= @word.id %>">
+  <% end %>
+  Word:        <input type="text" name="word" value="<%= @word ? @word.word : ''%>"><br>
+  Translation: <input type="text" name="translation" value="<%= @word ? @word.translation : '' %>"><br>
   <br>
 
   <input type="submit" value="Save">
