@@ -3,13 +3,20 @@
 <a href="/word/new?content_id=<%= @content.id %>">new word</a>
 <br>
 <br>
-<% @words.each do |word| %>
-  <div style="margin-top: 3pt">
-  <span style="font-size: 15pt"><%= word.word %></span> <span style="color: gray">/ <%= word.translation %> </span>
-  <small>
-    <a href="/word/<%= word.id %>/edit">e</a>
-    |
-    <a href="/word/<%= word.id %>/delete">x</a>
-  </small>
+
+<% @words.each do |word_obj| %>
+  <% word, pronunciation = word_obj.word_and_pronunciation %>
+  <% translation = word_obj.translation %>
+   <div style="margin-top: 3pt">
+    <span style="font-size: 15pt"><%= word %></span>
+    <% if pronunciation %>
+      <span style="color: #888"><%= pronunciation %></span>
+    <% end %>
+    <span style="color: #606060; font-size: 11pt"> <%= translation %> </span>
+    <small>
+      <a style="text-decoration: none" href="/word/<%= word_obj.id %>/edit">e</a>
+      |
+      <a style="text-decoration: none" href="/word/<%= word_obj.id %>/delete">x</a>
+    </small>
   </div>
 <% end %>
