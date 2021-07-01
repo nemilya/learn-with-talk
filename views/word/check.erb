@@ -1,0 +1,67 @@
+<a href="/content/<%= @content.id %>">back to content</a><br>
+<h2><%= @content.title %> / check</h2>
+<br>
+<div id="words_check">
+<div style="display: block-inline">
+<textarea v-model="input_words" cols="20" rows="20" @keyup.enter="onEnterInInputWords()" spellcheck="false"></textarea>
+<textarea v-model="check_words" cols="30" rows="20" spellcheck="false"></textarea>
+</div>
+<br>
+<button @click="checkWords()">check</button>
+&nbsp;
+<button @click="check_words = ''">reset</button>
+</div>
+
+<script>
+const WordsCheck = {
+  data() {
+    return {
+      input_words: '',
+      check_words: '',
+      words: <%= @words.map{|w| { word: w.word_and_pronunciation.first} }.to_json %> 
+    }
+  },
+  methods: {
+    inputWordsAndOffset(){
+      var lines = this.input_words.split("\n");
+      var offset = parseInt(lines[0]);
+      if (isNaN(offset)) { return { offset: 0, words: lines }; }
+      lines.shift();
+      return { offset: offset, words: lines };
+    },
+    onEnterInInputWords(){
+      if (this.inputWordsAndOffset().words.length == 11){
+        this.checkWords();
+      }
+    },
+    checkWords(){
+      this.check_words = '';
+      var input_words_and_offset = this.inputWordsAndOffset();
+      var input_words = input_words_and_offset.words;
+      var offset = input_words_and_offset.offset;
+      var pos_offset = 0;
+      if (offset > 0){
+        pos_offset = (offset - 1)*10;
+      }
+      this.check_words += "\n";
+      for(var index=0; index < 10; index++){
+        var input_word = input_words_and_offset.words[index] || '';
+        var check_word = this.words[pos_offset+index].word;
+        if (input_word == ''){
+          break;
+        }
+        if (input_word == check_word){
+          this.check_words += "[+]";
+        }
+        else{
+          this.check_words += "[-] ";
+          this.check_words += check_word;
+        }
+        this.check_words += "\n";
+      }
+    }
+  }
+};
+
+Vue.createApp(WordsCheck).mount('#words_check');
+</script>

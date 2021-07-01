@@ -1,3 +1,9 @@
+get '/words/:content_id/check' do
+  @content = Content.find(id: params[:content_id])
+  @words = @content.words
+  erb :'word/check'
+end
+
 get '/words/:content_id' do
   @content = Content.find(id: params[:content_id])
   @words = Word.where(content_id: @content.id).all
