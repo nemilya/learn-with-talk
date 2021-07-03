@@ -3,13 +3,18 @@
 <br>
 <div id="words_check">
 <div style="display: block-inline">
-<textarea v-model="input_words" cols="20" rows="20" @keyup.enter="onEnterInInputWords()" spellcheck="false"></textarea>
+<textarea v-model="input_words"
+          cols="20" rows="20"
+          @keyup.enter="onEnterInInputWords()"
+          @keyup.alt.enter="checkWords()"
+          @keyup.alt.delete="resetBoth()"
+          spellcheck="false"></textarea>
 <textarea v-model="check_words" cols="30" rows="20" spellcheck="false"></textarea>
 </div>
 <br>
-<button @click="checkWords()">check</button>
+<button @click="checkWords()" title="alt-enter">check</button>
 &nbsp;
-<button @click="check_words = ''; input_words = ''">reset both</button>
+<button @click="resetBoth()" title="alt-delete">reset both</button>
 </div>
 
 <script>
@@ -22,6 +27,10 @@ const WordsCheck = {
     }
   },
   methods: {
+    resetBoth(){
+      this.check_words = '';
+      this.input_words = '';
+    },
     inputWordsAndOffset(){
       var lines = this.input_words.split("\n");
       var offset = parseInt(lines[0]);
