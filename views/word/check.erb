@@ -4,12 +4,13 @@
 <div id="words_check">
 <div style="display: block-inline">
 <textarea v-model="input_words"
-          cols="20" rows="20"
+          cols="20" rows="12"
           @keyup.enter="onEnterInInputWords()"
           @keyup.alt.enter="checkWords()"
+          @keyup.ctrl.enter="checkWords('with_pronunciation')"
           @keyup.alt.delete="resetBoth()"
           spellcheck="false"></textarea>
-<textarea v-model="check_words" cols="30" rows="20" spellcheck="false"></textarea>
+<textarea v-model="check_words" cols="30" rows="12" spellcheck="false"></textarea>
 </div>
 <br>
 <button @click="checkWords()" title="alt-enter">check</button>
@@ -23,7 +24,7 @@ const WordsCheck = {
     return {
       input_words: '',
       check_words: '',
-      words: <%= @words.map{|w| { word: w.word_and_pronunciation.first} }.to_json %> 
+      words: <%= @words.map{|w| { word: w.word_and_pronunciation[0], pronunciation: w.word_and_pronunciation[1]} }.to_json %> 
     }
   },
   methods: {
@@ -43,7 +44,8 @@ const WordsCheck = {
         this.checkWords();
       }
     },
-    checkWords(){
+    // mode = '' | 'with_pronunciation'
+    checkWords(mode=''){
       this.check_words = '';
       var input_words_and_offset = this.inputWordsAndOffset();
       var input_words = input_words_and_offset.words;
@@ -55,12 +57,15 @@ const WordsCheck = {
       this.check_words += "\n";
       for(var index=0; index < 10; index++){
         var input_word = input_words_and_offset.words[index] || '';
-        var check_word = this.words[pos_offset+index].word;
         if (input_word == ''){
           break;
         }
+        var check_word = this.words[pos_offset+index].word;
         if (input_word == check_word){
           this.check_words += "[+]";
+          if (mode == 'with_pronunciation' && this.words[pos_offset+index].pronunciation){
+            this.check_words += " " + this.words[pos_offset+index].pronunciation;
+          }
         }
         else{
           this.check_words += "[-] ";

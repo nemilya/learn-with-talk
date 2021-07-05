@@ -43,7 +43,7 @@ post '/word/save' do
   if params[:subtitle_line_pos]
     redirect "/content/#{word.content_id}/subtitles#line_index_#{params[:subtitle_line_pos]}"
   else
-    redirect "/words/#{word.content_id}"
+    redirect "/words/#{word.content_id}#word_#{word.id}"
   end
 end
 

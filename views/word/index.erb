@@ -7,7 +7,7 @@
 <% @words.each_with_index do |word_obj, index| %>
   <% word, pronunciation = word_obj.word_and_pronunciation %>
   <% translation = word_obj.translation %>
-   <div style="margin-top: 3pt; margin-bottom: <%= (index+1) % 10 == 0 ? '13pt' : '0pt' %>">
+   <div style="margin-top: 3pt; margin-bottom: <%= (index+1) % 10 == 0 ? '13pt' : '0pt' %>"><a name="word_<%= word_obj.id %>"></a>
     <span style="color: #aaa; font-size: 8pt"><%= '&nbsp; ' if index+1 < 10 %><%= index + 1 %>. </span><span style="font-size: 15pt"><%= word %></span>
     <% if pronunciation %>
       <span style="color: #888"><%= pronunciation %></span>
