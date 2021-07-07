@@ -1,0 +1,99 @@
+<div id="quiz">
+  <v-template v-for="(word_info, word_index) in words">
+  <div
+    v-bind:style="{
+      'display': 'inline-grid',
+      'grid-template-rows': '30px',
+      'grid-template-columns': ' 30px'.repeat(word_info.letters.length),
+      'grid-gap': '3px',
+      'margin-bottom': '3px',
+    }"
+  >
+    <div
+      v-for="(letter, letter_index) in word_info.letters"
+      style="display: flex; justify-content: center; align-items: center; background-color: #f0f0f0; border: 0px solid black; font-size: 1em; cursor: pointer"
+      v-bind:style="cellStyle(word_index, letter_index)"
+      v-on:click="cellClick(word_index, letter_index)"
+    >
+      {{letter.toUpperCase()}}
+    </div>
+  </div>
+  <span style="font-weight: bold; padding-left: 10pt">{{resultingWord(word_index)}}</span>
+  <br>
+  </v-template>
+</div>
+
+
+<script>
+const Quiz = {
+  data() {
+    return {
+      current_word_pos: null,
+      words: <%= @words.to_json %>,
+      selected_letters_positions: [],
+      selected_letters: [],
+      guessed_words: []
+    }
+  },
+  methods: {
+    resultingWord: function(word_index){
+      if (word_index == this.current_word_pos){
+        return this.selected_letters.join('').toUpperCase();
+      }
+      return '';
+    },
+    cellClick: function(word_index, letter_index){
+      if (this.guessed_words.includes(word_index)){
+        return;
+      }
+      if (!this.current_word_pos){
+        this.current_word_pos = word_index;
+      }
+      if (word_index != this.current_word_pos){
+        return;
+      }
+      if (this.selected_letters_positions.includes([word_index, letter_index].join('-'))){
+        if (this.selected_letters_positions[this.selected_letters_positions.length-1] == [word_index, letter_index].join('-')){
+          // undo last letter
+          this.selected_letters_positions.pop();
+          this.selected_letters.pop();
+          if (this.selected_letters.length == 0){
+            this.current_word_pos = null;
+          }
+        }
+        return;
+      }
+      this.selected_letters_positions.push([word_index, letter_index].join('-'))
+      this.selected_letters.push(this.words[word_index].letters[letter_index]);
+      this.handleGuess();
+    },
+    handleGuess: function(){
+      if (this.isWordGuessed()){
+        this.guessed_words.push(this.current_word_pos);
+        var word = this.words[this.current_word_pos].word;
+        this.words[this.current_word_pos].letters = word.split('');
+        this.current_word_pos = null;
+        this.selected_letters_positions = [];
+        this.selected_letters = [];
+      }
+    },
+    isWordGuessed: function(){
+      return this.words[this.current_word_pos].word == this.selected_letters.join('');
+    },
+    cellStyle: function(word_index, letter_index){
+      if (this.guessed_words.includes(word_index)){
+        return {'background-color': 'green'};
+      }
+      else if (this.selected_letters_positions.includes([word_index, letter_index].join('-'))){
+        return {'background-color': 'yellow'};
+      }
+      else{
+        return {};
+      }
+    }
+  }
+
+}
+Vue.createApp(Quiz).mount('#quiz');
+
+</script>

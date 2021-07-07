@@ -1,3 +1,22 @@
+get '/words/:content_id/quiz' do
+  @content = Content.find(id: params[:content_id])
+  @words_bunch = @content.words[0..9]
+
+
+  @words = []
+  @words_bunch.each do |word|
+    w = word.word_and_pronunciation[0]
+    letters = w.split('').shuffle
+    @words << {
+      word: w,
+      letters: letters
+    }
+  end
+  @words.shuffle!
+
+  erb :'word/quiz'
+end
+
 get '/words/:content_id/check' do
   @content = Content.find(id: params[:content_id])
   @words = @content.words
