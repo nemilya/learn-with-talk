@@ -1,7 +1,7 @@
 get '/words/:content_id/quiz' do
+  page = params[:p] || 1
   @content = Content.find(id: params[:content_id])
-  @words_bunch = @content.words[0..9]
-
+  @words_bunch = @content.words[(page.to_i-1)*10..(page.to_i*10-1)]
 
   @words = []
   @words_bunch.each do |word|
@@ -12,7 +12,7 @@ get '/words/:content_id/quiz' do
       letters: letters
     }
   end
-  @words.shuffle!
+  @words.shuffle! unless params[:noshuffle]
 
   erb :'word/quiz'
 end
