@@ -53,6 +53,7 @@ post '/word/save' do
   else
     word = Word.new
     word.content_id = params[:content_id]
+    word.created_at = Time.now
   end
   ['word', 'translation'].each do |f_name|
     word[f_name] = params[f_name]
