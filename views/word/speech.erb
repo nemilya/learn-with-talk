@@ -1,0 +1,66 @@
+<div id="speech">
+  <v-template v-for="(word, index) in words">
+  <div
+    v-bind:style="{
+      'margin-bottom': '3px',
+      'color': wordColor(index),
+      'display': this.hide_words ? 'inline' : '',
+      'font-size': this.hide_words ? '20pt' : ''
+    }"
+  >
+    {{index+1}}{{hide_words ? '&nbsp;' : '.'}} <span v-if="!hide_words">{{word}}</span>
+  </div>
+  </v-template>
+  <br/>
+  <br v-if="hide_words"/>
+  <textarea v-model="speeching" ref="s" cols=40 rows=3 spellcheck="false"></textarea>
+  <br>
+  <button @click="clearInput()">clear</button>
+</div>
+
+
+<script>
+const Speech = {
+  data() {
+    return {
+      hide_words: <%= params[:hide].to_i == 1 ? 'true' : 'false' %>,
+      words: <%= @words.to_json %>,
+      speeching: ''
+    }
+  },
+  mounted() {
+    this.focusSpeechingInput();
+  },
+  methods: {
+    focusSpeechingInput: function(){
+      this.$refs.s.focus();
+    },
+    clearInput: function(){
+      this.focusSpeechingInput();
+      this.speeching = ''; 
+    },
+    wordColor: function(index){
+      if (this.checkToIncludeWords().includes(index)){
+        return 'green';
+      }
+      else{
+        return '';
+      }
+    },
+    checkToIncludeWords: function(){
+      var found_words_index = [];
+      var speech_text = ' ' + this.speeching.toLowerCase() + ' ';
+      for (var pos = 0; pos < this.words.length; pos++){
+        var search_word = ' ' + this.words[pos] + ' ';
+        if (speech_text.indexOf(search_word) != -1){
+          found_words_index.push(pos);
+        }
+      }
+      return found_words_index;
+    }
+  }
+
+}
+Vue.createApp(Speech).mount('#speech');
+
+</script>

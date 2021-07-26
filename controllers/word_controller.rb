@@ -1,3 +1,16 @@
+get '/words/:content_id/speech' do
+  page = params[:p] || 1
+  @content = Content.find(id: params[:content_id])
+  @words_bunch = @content.words[(page.to_i-1)*10..(page.to_i*10-1)]
+
+  @words = []
+  @words_bunch.each do |word|
+    w = word.word_and_pronunciation[0]
+    @words << w
+  end
+  erb :'word/speech'
+end
+
 get '/words/:content_id/quiz' do
   page = params[:p] || 1
   @content = Content.find(id: params[:content_id])
