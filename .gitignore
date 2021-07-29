@@ -1,4 +1,4 @@
 database.db
 subtitles/*
 !subtitles/.gitkeep
-
+config.yml
