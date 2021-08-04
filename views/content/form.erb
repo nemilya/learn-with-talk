@@ -4,6 +4,9 @@
   <% if @content %>
     <input type="hidden" name="content_id" value="<%= @content.id %>">
   <% end %>
+  <% if params[:g_id] %>
+    <input type="hidden" name="content_group_id" value="<%= params[:g_id] %>">
+  <% end %>
   Title: <input type="text" name="title" value="<%= @content && @content.title %>" size="50"><br>
   Url:   <input type="text" name="url" size="50" value="<%= @content && @content.url %>"><br>
   Transcript:

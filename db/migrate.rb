@@ -16,6 +16,18 @@ DB.create_table :contents do
   String      :title
   String      :url
   String      :transcript, text: true 
+  Integer     :content_group_id
+end
+
+# DB.alter_table(:contents) do
+#  add_column :content_group_id, Integer
+# end
+
+DB.create_table :content_groups do
+  primary_key :id
+  foreign_key :user_id, :users
+  String      :title
+  DateTime    :created_at
 end
 
 DB.create_table :words do

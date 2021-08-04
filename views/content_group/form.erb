@@ -1,0 +1,11 @@
+<h2>Content Group form</h2>
+
+<form action="/content_group/save" method="post">
+  <% if @content_group %>
+    <input type="hidden" name="content_group_id" value="<%= @content_group.id %>">
+  <% end %>
+  Title: <input type="text" name="title" value="<%= @content_group && @content_group.title %>" size="50"><br>
+  <br>
+
+  <input type="submit" value="Save">
+</form>

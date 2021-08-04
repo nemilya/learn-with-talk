@@ -37,5 +37,12 @@ end
 get '/user/:id' do
   #  @contents = Content.where(user_id: params[:id]).all
   @user = User.find(id: params[:id])
+  @contents = @user.contents
+  if params[:g_id]
+    @content_group = ContentGroup.find(id: params[:g_id])
+    @contents.delete_if{|c| c.content_group_id != @content_group.id}
+  else
+    @contents.delete_if{|c| !c.content_group_id.nil? }
+  end
   erb :'user/show'
 end

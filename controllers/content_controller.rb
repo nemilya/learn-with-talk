@@ -46,11 +46,16 @@ post '/content/save' do
       Content.new
     end
   content.user_id = @current_user.id
+  content.content_group_id = params[:content_group_id] if params[:content_group_id]
   ['title', 'url', 'transcript'].each do |f_name|
     content[f_name] = params[f_name]
   end
   content.save
-  redirect "/user/#{@current_user.id}"
+  if content.content_group_id
+    redirect "/user/#{@current_user.id}?g_id=#{content.content_group_id}"
+  else
+    redirect "/user/#{@current_user.id}"
+  end
 end
 
 get '/content/:content_id' do

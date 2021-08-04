@@ -1,10 +1,22 @@
-<h2>User page / Content</h2>
+Groups:
+<a href="/user/<%= @user.id %>">none</a>
+<% @user.content_groups.each do |content_group| %>
+  <a href="?g_id=<%= content_group.id %>"><%= content_group.title %></a>
+  <small>
+  (<a href="/content_group/<%= content_group.id %>/edit">e</a>
+  | <a href="/content_group/<%= content_group.id %>/delete">x</a>
+  )
+  </small>
+<% end %>
+<a href="/content_group/new">New group</a>
+<br>
+<h2>Content</h2>
 
-<a href="/content/new">New content</a>
+<a href="/content/new?g_id=<%= params[:g_id] %>">New content</a>
 <br>
 <br>
 
-<% @user.contents.each do |content| %>
+<% @contents.each do |content| %>
   <%= content.title %>
     <a href="/content/<%= content.id %>">show</a>
   | <a href="/content/<%= content.id %>/edit">edit</a>
