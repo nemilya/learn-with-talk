@@ -1,4 +1,5 @@
 <div id="quiz">
+  <audio id="success" src="/audio/success.mp3"></audio>
   <v-template v-for="(word_info, word_index) in words">
   <div
     v-bind:style="{
@@ -36,6 +37,10 @@ const Quiz = {
     }
   },
   methods: {
+    playSuccess: function(){
+      var audio = document.getElementById("success");
+      audio.play();
+    },
     resultingWord: function(word_index){
       if (word_index == this.current_word_pos){
         return this.selected_letters.join('').toUpperCase();
@@ -75,6 +80,7 @@ const Quiz = {
         this.current_word_pos = null;
         this.selected_letters_positions = [];
         this.selected_letters = [];
+        this.playSuccess();
       }
     },
     isWordGuessed: function(){
