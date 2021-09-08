@@ -1,5 +1,6 @@
 <div id="quiz">
   <audio id="success" src="/audio/success.mp3"></audio>
+
   <v-template v-for="(word_info, word_index) in words">
   <div
     v-bind:style="{
@@ -22,6 +23,16 @@
   <span style="font-weight: bold; padding-left: 10pt">{{resultingWord(word_index)}}</span>
   <br>
   </v-template>
+
+  <br>
+  <button @click="playBg('bg1')">bg1</button>
+  <button @click="playBg('bg2')">bg2</button>
+  <button @click="playBg('bg3')">bg3</button>
+  <button @click="bg_sound = ''">no bg</button>
+
+  <audio v-if="bg_sound == 'bg1'" id="bg1" src="https://www.bensound.com/bensound-music/bensound-summer.mp3"></audio>
+  <audio v-if="bg_sound == 'bg2'" id="bg2" src="https://www.bensound.com/bensound-music/bensound-thelounge.mp3"></audio>
+  <audio v-if="bg_sound == 'bg3'" id="bg3" src="https://www.bensound.com/bensound-music/bensound-dreams.mp3"></audio>
 </div>
 
 
@@ -33,10 +44,21 @@ const Quiz = {
       words: <%= @words.to_json %>,
       selected_letters_positions: [],
       selected_letters: [],
-      guessed_words: []
+      guessed_words: [],
+      bg_sound: ''
     }
   },
   methods: {
+    playBg: function(bg_name){
+      this.bg_sound = bg_name; 
+      this.$nextTick(() => this.playBgAudio(bg_name));
+    },
+    playBgAudio: function(el_id){
+      var audio = document.getElementById(el_id);
+      audio.loop = true;
+      audio.volume = 0.1;
+      audio.play();
+    },
     playSuccess: function(){
       var audio = document.getElementById("success");
       audio.play();
