@@ -38,7 +38,7 @@ end
 
 get '/words/:content_id' do
   @content = Content.find(id: params[:content_id])
-  @words = Word.where(content_id: @content.id).all
+  @words = Word.where(content_id: @content.id).order(:subtitle_line_pos).all
   erb :'word/index'
 end
 
