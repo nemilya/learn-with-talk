@@ -2,7 +2,7 @@ require_relative '../lib/youtube_subtitle'
 
 class Content < Sequel::Model
 
-  one_to_many :words
+  one_to_many :words, order: :subtitle_line_pos
 
   def video_id
     YoutubeSubtitle.video_id(url)
